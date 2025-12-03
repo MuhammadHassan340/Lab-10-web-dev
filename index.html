@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 10: Product List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    #productList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+    }
+    .product-card {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .product-card h3 {
+      margin: 0 0 10px;
+    }
+    .product-card p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Product List</h1>
+
+  <div class="controls">
+    <label>
+      Filter by category:
+      <select id="categoryFilter">
+        <option value="all">All</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Kitchen">Kitchen</option>
+        <option value="Stationery">Stationery</option>
+      </select>
+    </label>
+
+    <label>
+      Sort by price:
+      <select id="sortPrice">
+        <option value="none">None</option>
+        <option value="asc">Low to High</option>
+        <option value="desc">High to Low</option>
+      </select>
+    </label>
+  </div>
+
+  <div id="productList"></div>
+
+  <script>
+    // JSON data embedded directly
+    const products = [
+      { "id": 1, "name": "Laptop", "category": "Electronics", "price": 1200 },
+      { "id": 2, "name": "Headphones", "category": "Electronics", "price": 150 },
+      { "id": 3, "name": "Coffee Mug", "category": "Kitchen", "price": 12 },
+      { "id": 4, "name": "Notebook", "category": "Stationery", "price": 5 },
+      { "id": 5, "name": "Smartphone", "category": "Electronics", "price": 800 },
+      { "id": 6, "name": "Pen", "category": "Stationery", "price": 2 },
+      { "id": 7, "name": "Blender", "category": "Kitchen", "price": 60 }
+    ];
+
+    const productList = document.getElementById('productList');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const sortPrice = document.getElementById('sortPrice');
+
+    // Render products on page
+    const renderProducts = (items) => {
+      productList.innerHTML = '';
+      items.forEach(({ name, category, price }) => {
+        const productCard = document.createElement('div');
+        productCard.className = 'product-card';
+        productCard.innerHTML = `
+          <h3>${name}</h3>
+          <p>Category: ${category}</p>
+          <p>Price: $${price}</p>
+        `;
+        productList.appendChild(productCard);
+      });
+    };
+
+    // Filter & Sort
+    const filterProducts = () => {
+      const category = categoryFilter.value;
+      let filtered = products;
+
+      if (category !== 'all') {
+        filtered = products.filter(product => product.category === category);
+      }
+
+      const sort = sortPrice.value;
+      if (sort === 'asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sort === 'desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      }
+
+      renderProducts(filtered);
+    };
+
+    // Event listeners
+    categoryFilter.addEventListener('change', filterProducts);
+    sortPrice.addEventListener('change', filterProducts);
+
+    // Initial render
+    renderProducts(products);
+  </script>
+</body>
+</html>
